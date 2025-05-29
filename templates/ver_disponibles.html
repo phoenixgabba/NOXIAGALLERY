@@ -86,7 +86,7 @@
 
     <div id="camera-container">
         <video id="video" autoplay playsinline muted></video>
-        <img id="overlay" class="overlay-img" src="" alt="Diseño superpuesto" style="display: none;">
+        <canvas id="canvas" style="display: none;"></canvas> <!-- Canvas oculto para dibujar la imagen -->
     </div>
 
     <div id="diseños">
@@ -102,6 +102,8 @@
 
     <script>
         const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         const overlay = document.getElementById('overlay');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream;
@@ -149,6 +151,8 @@
             detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
             video.width = 640;
             video.height = 480;
+            canvas.width = 640;
+            canvas.height = 480; // Ajustar el tamaño del canvas
             requestAnimationFrame(detectPose);
         }
 
@@ -167,7 +171,7 @@
                             const x = target.x;
                             const y = target.y;
 
-                            // Ajustar posición y recorte del diseño
+                            // Dibujar la imagen del diseño en el canvas
                             const designWidth = selectedDesign.width;
                             const designHeight = selectedDesign.height;
 
