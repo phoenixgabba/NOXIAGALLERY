@@ -105,6 +105,7 @@
         let detector;
         let selectedDesign = null;
 
+        // Detectar dispositivos de video
         navigator.mediaDevices.enumerateDevices().then(devices => {
             const videoDevices = devices.filter(device => device.kind === 'videoinput');
             videoDevices.forEach((device, index) => {
@@ -113,7 +114,13 @@
                 option.text = device.label || `Cámara ${index + 1}`;
                 cameraSelect.appendChild(option);
             });
-            if (videoDevices.length > 0) startCamera(videoDevices[0].deviceId);
+
+            // Intentar usar la cámara trasera si está disponible
+            const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
+            const cameraToUse = rearCamera || videoDevices[0]; // Usa la cámara trasera o la primera cámara disponible
+            if (cameraToUse) {
+                startCamera(cameraToUse.deviceId);
+            }
         });
 
         cameraSelect.addEventListener('change', () => {
@@ -152,17 +159,16 @@
                         const x = target.x;
                         const y = target.y;
 
-                        // Adjust design position
+                        // Ajustar posición y recorte del diseño
                         const designWidth = selectedDesign.width;
                         const designHeight = selectedDesign.height;
 
-                        // Only show part of the design within the body
                         const maskX = Math.max(x - designWidth / 2, 0);
                         const maskY = Math.max(y - designHeight / 2, 0);
                         const maskWidth = Math.min(designWidth, canvas.width - maskX);
                         const maskHeight = Math.min(designHeight, canvas.height - maskY);
 
-                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before redrawing
+                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas antes de redibujar
                         ctx.drawImage(selectedDesign, maskX, maskY, maskWidth, maskHeight);
                     }
                 }
