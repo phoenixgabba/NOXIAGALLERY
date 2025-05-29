@@ -10,6 +10,15 @@
             color: #f5f5f5;
             text-align: center;
             padding: 20px;
+            font-family: 'CloisterBlack', serif;
+        }
+        select {
+            margin-bottom: 15px;
+            padding: 5px;
+            background-color: #222;
+            color: gold;
+            border: 1px solid gold;
+            border-radius: 5px;
         }
         video, canvas {
             width: 80%;
@@ -54,6 +63,11 @@
     <h1>🖤 Prueba tus Diseños</h1>
     <p>Activa tu cámara y elige un diseño para ver cómo te queda.</p>
 
+    <div>
+        <label for="cameraSelect">Selecciona una cámara:</label>
+        <select id="cameraSelect"></select>
+    </div>
+
     <div id="camera-container">
         <video id="video" autoplay playsinline muted></video>
         <img id="overlay" class="overlay-img" src="" alt="Diseño superpuesto" style="display: none;">
@@ -73,20 +87,50 @@
     <script>
         const video = document.getElementById('video');
         const overlay = document.getElementById('overlay');
+        const cameraSelect = document.getElementById('cameraSelect');
+        let currentStream;
 
-        // Activar la cámara
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => { video.srcObject = stream; })
-            .catch(err => { 
-                alert('No se pudo acceder a la cámara');
-                document.querySelector('#camera-container').innerHTML = '<p class="mensaje-error">Error al acceder a la cámara.</p>';
+        // Listar cámaras disponibles
+        navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                videoDevices.forEach((device, index) => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || `Cámara ${index + 1}`;
+                    cameraSelect.appendChild(option);
+                });
+
+                if (videoDevices.length > 0) {
+                    startCamera(videoDevices[0].deviceId);
+                }
             });
 
-        // Función para seleccionar un diseño
+        // Cambiar de cámara cuando se selecciona otra
+        cameraSelect.addEventListener('change', () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            startCamera(cameraSelect.value);
+        });
+
+        function startCamera(deviceId) {
+            navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: deviceId } } })
+                .then(stream => {
+                    currentStream = stream;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    alert('No se pudo acceder a la cámara: ' + err.message);
+                    document.querySelector('#camera-container').innerHTML = '<p class="mensaje-error">Error al acceder a la cámara.</p>';
+                });
+        }
+
+        // Seleccionar diseño
         function seleccionarDiseno(img) {
             overlay.src = img.src;
             overlay.style.display = 'block';
-            overlay.style.top = '20%'; // Puedes ajustar esto
+            overlay.style.top = '20%';
             overlay.style.left = '50%';
             overlay.style.transform = 'translateX(-50%)';
         }
