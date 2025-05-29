@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -26,9 +26,13 @@
         #camera-container {
             position: relative;
             display: inline-block;
+            margin-bottom: 20px;
         }
         #diseños {
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .diseño-thumb {
             max-width: 100px;
@@ -41,10 +45,8 @@
             transform: scale(1.1);
             border: 2px solid gold;
         }
-        .container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+        .mensaje-error {
+            color: red;
         }
     </style>
 </head>
@@ -52,21 +54,20 @@
     <h1>🖤 Prueba tus Diseños</h1>
     <p>Activa tu cámara y elige un diseño para ver cómo te queda.</p>
 
-    <!-- Contenedor de la cámara y el diseño superpuesto -->
     <div id="camera-container">
         <video id="video" autoplay playsinline muted></video>
         <img id="overlay" class="overlay-img" src="" alt="Diseño superpuesto" style="display: none;">
     </div>
 
-    <!-- Contenedor de los diseños disponibles -->
     <div id="diseños">
         <h2>Diseños Disponibles</h2>
-        <div class="container">
+        {% if imagenes %}
             {% for img in imagenes %}
-                <img src="{{ url_for('static', filename='uploads_disponibles/' + img) }}" 
-                     class="diseño-thumb" onclick="seleccionarDiseno(this)">
+                <img src="{{ url_for('static', filename='uploads_disponibles/' + img) }}" class="diseño-thumb" onclick="seleccionarDiseno(this)">
             {% endfor %}
-        </div>
+        {% else %}
+            <p class="mensaje-error">No hay diseños disponibles en este momento.</p>
+        {% endif %}
     </div>
 
     <script>
@@ -75,22 +76,19 @@
 
         // Activar la cámara
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(err => {
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { 
                 alert('No se pudo acceder a la cámara');
+                document.querySelector('#camera-container').innerHTML = '<p class="mensaje-error">Error al acceder a la cámara.</p>';
             });
 
-        // Función para seleccionar un diseño y superponerlo en la cámara
+        // Función para seleccionar un diseño
         function seleccionarDiseno(img) {
             overlay.src = img.src;
             overlay.style.display = 'block';
-            overlay.style.top = '20%';  // Ajusta la posición vertical
-            overlay.style.left = '50%'; // Centrado horizontalmente
+            overlay.style.top = '20%'; // Puedes ajustar esto
+            overlay.style.left = '50%';
             overlay.style.transform = 'translateX(-50%)';
-            overlay.style.width = '150px'; // Tamaño inicial del tatuaje
-            overlay.style.height = '150px'; // Tamaño inicial del tatuaje
         }
     </script>
 </body>
