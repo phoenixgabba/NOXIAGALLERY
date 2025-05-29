@@ -1,0 +1,350 @@
+/* Fuente gótica personalizada */
+@font-face {
+    font-family: 'CloisterBlack';
+    src: url('/static/CloisterBlack.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Estilo base */
+body {
+    font-family: 'CloisterBlack', serif !important;
+    background-color: #0a0a0a;
+    color: #d4af37;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Video de fondo */
+#video-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* Overlay */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Opacidad más ligera */
+    z-index: -1;
+}
+
+/* Menú de navegación */
+.navbar ul {
+    display: flex;               /* Usamos Flexbox para que los elementos estén en una fila */
+    justify-content: flex-start;  /* Alinea los elementos al inicio */
+    padding: 0;                  /* Elimina el padding predeterminado del ul */
+    margin: 0;                   /* Elimina el margen predeterminado del ul */
+    list-style: none;            /* Elimina los puntos de la lista */
+}
+
+/* Cada item del menú */
+.navbar li {
+    margin-right: 20px; /* Espacio entre los elementos */
+}
+
+/* Estilos de los enlaces */
+.navbar a {
+    color: #d4af37;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: 'CloisterBlack', serif;
+    transition: background-color 0.3s, color 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: block;  /* Hace que cada enlace se comporte como un bloque */
+}
+
+/* Efecto hover en los enlaces */
+.navbar a:hover {
+    background-color: #d4af37;
+    color: #000;
+}
+
+/* Contenedor principal (con el logo encima del video) */
+.main-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 160vh;
+    z-index: 1;
+    width: 100%;
+    text-align: center; /* Asegura que todo el contenido dentro se centre */
+}
+
+/* Contenedor del logo */
+.logo-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+}
+
+/* Imagen dentro del contenedor */
+.logo-container img {
+    width: 300px !important;
+    height: auto;
+    filter: drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.8));
+}
+
+/* Título debajo del logo */
+.logo-container h1 {
+    color: #d4af37 !important;
+    font-family: 'CloisterBlack', serif !important;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    font-size: 28px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+/* Estilo del formulario */
+form {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.7);
+    margin-top: 60px;
+    width: 80%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+/* Estilo para los campos de entrada */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="file"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    background-color: #333333;
+    border: 2px solid #d4af37;
+    color: #d4af37;
+    border-radius: 10px;
+    font-family: 'CloisterBlack', serif;
+    font-size: 16px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Botones y Submit */
+input[type="submit"],
+button {
+    background-color: #d4af37;
+    color: #000;
+    padding: 14px 20px;
+    font-family: 'CloisterBlack', serif;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: #b88d2f;
+    transform: translateY(-2px);
+}
+
+/* Enlaces */
+a {
+    color: #d4af37 !important;
+    text-decoration: none;
+    font-size: 16px;
+    display: inline-block;
+    margin-top: 10px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #b88d2f !important;
+    text-decoration: underline;
+}
+
+/* Pie de página */
+footer {
+    background-color: #111111;
+    color: #d4af37;
+    text-align: center;
+    padding: 12px;
+    margin-top: auto;
+    border-top: 1px solid #444;
+}
+
+/* Logo centrado adicional */
+.logo-centro {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.logo-centro img {
+    width: 250px;
+    height: auto;
+    filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.7));
+}
+
+/* Barra lateral */
+.sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar a {
+    display: block;
+    margin-bottom: 12px;
+    color: #d4af37;
+    text-decoration: none;
+    font-family: 'CloisterBlack', serif;
+}
+
+/* Panel de citas */
+.panel-container {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.cita-card {
+    background-color: rgba(0, 0, 0, 0.85);
+    border: 2px solid #d4af37;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    color: #d4af37;
+}
+
+/* Botón eliminar */
+.boton-eliminar {
+    background-color: #d4af37;
+    color: black;
+    border: none;
+    padding: 10px 16px;
+    font-family: 'CloisterBlack', serif;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton-eliminar:hover {
+    background-color: #b88d2f;
+}
+.contenido-base {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+    color: #f0f0f0;
+}
+
+.panel-container,
+.cita-card,
+.galeria,
+.sidebar {
+    background-color: rgba(20, 20, 20, 0.9); /* Fondo oscuro semitransparente */
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.cita-card {
+    border: 1px solid #444;
+    box-shadow: 0 0 10px #222;
+}
+
+.galeria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tatuaje {
+    background-color: #111;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 200px;
+    text-align: center;
+}
+
+.tatuaje img {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #555;
+}
+.artists-section {
+    padding: 40px;
+    text-align: center;
+    background-color: #111;
+    color: white;
+}
+
+.artists-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.artist-profile {
+    background-color: #222;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.artist-profile img {
+    width: 100%;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.artist-profile h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.artist-profile a {
+    text-decoration: none;
+    color: #ffcc00;
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+
+.artist-profile a:hover {
+    color: #ff6600;
+}

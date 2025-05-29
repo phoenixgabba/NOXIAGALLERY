@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noxîa Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Noxîa Gallery">
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                <!-- Verifica si el usuario está logueado antes de permitir acceder al Panel -->
+                {% if 'usuario_id' in session %}
+                    <li><a href="{{ url_for('panel') }}">Panel</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Panel (Inicia sesión)</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('galeria') }}">Galería</a></li>
+                <li><a href="{{ url_for('sobre_mi') }}">Artistas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenedor principal -->
+    <main>
+        <div class="main-container">
+            <div class="intro">
+                <h2>Noxîa Gallery & Studio</h2>
+                <p>Valencia.</p>
+
+                <!-- Contenedor de botones -->
+                <div class="button-container">
+                    <!-- Verifica si el usuario está logueado antes de permitir acceder al Panel -->
+                    {% if 'usuario_id' in session %}
+                        <a href="{{ url_for('panel') }}" class="button">Acceder al Panel</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="button">Inicia sesión para acceder al Panel</a>
+                    {% endif %}
+                    <a href="{{ url_for('galeria') }}" class="button">Ver Galería</a>
+                    <a href="{{ url_for('sobre_mi') }}" class="button">Conoce a los Artistas</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video de fondo -->
+        <div class="video-container">
+            <video id="video-fondo" autoplay loop muted>
+                <source src="{{ url_for('static', filename='videos/video.mp4') }}" type="video/mp4">
+                Tu navegador no soporta el formato de video.
+            </video>
+            <div class="overlay"></div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Noxîa Gallery. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

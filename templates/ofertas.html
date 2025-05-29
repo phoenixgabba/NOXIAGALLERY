@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas - Noxîa Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+    body {
+        background-color: #0f0f0f;
+        color: #e0e0e0;
+        font-family: 'Georgia', serif;
+    }
+
+    .ofertas-container {
+        max-width: 1000px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+
+    .oferta {
+        background-color: #1a1a1a;
+        border-left: 5px solid #d4af37;
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .oferta h2 {
+        color: #d4af37;
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+
+    .oferta p {
+        font-size: 1.1em;
+        line-height: 1.6;
+    }
+
+    .oferta img {
+        width: 150px;
+        height: auto;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid #d4af37;
+        transition: transform 0.2s ease;
+    }
+
+    .oferta img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Lightbox */
+    #lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 15, 15, 0.95);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+
+    #lightbox img {
+        max-width: 90%;
+        max-height: 90%;
+        border: 4px solid #d4af37;
+        border-radius: 10px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #111;
+        color: #aaa;
+    }
+
+    header {
+        background-color: #111;
+        padding: 20px 0;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: #d4af37;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        color: #ffffff;
+    }
+
+    .logo-container img {
+        max-height: 70px;
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+</style>
+
+</head>
+<div id="lightbox" onclick="cerrarLightbox()">
+    <img id="lightbox-img" src="" alt="Imagen Ampliada">
+</div>
+
+<body>
+    <!-- Menú de navegación -->
+    <header>
+        <div class="logo-container">
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li><a href="{{ url_for('panel') }}">Panel</a></li>
+                <li><a href="{{ url_for('galeria') }}">Galería</a></li>
+                <li><a href="{{ url_for('sobre_mi') }}">Sobre mí</a></li>
+                <li><a href="{{ url_for('ofertas') }}">Ofertas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="ofertas-container">
+        <div class="oferta">
+            <h2>Oferta JUNIO</h2>
+            <p>¡Solo este mes!</p>
+            <img src="{{ url_for('static', filename='images/junio2.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio3.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio4.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio5.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio6.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio7.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio8.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio9.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio10.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio11.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio12.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio13.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio14.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio15.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio16.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            
+        </div>
+
+        <div class="oferta">
+            <h3> Diseños con un 20%</h3>
+            <p> ¡Hasta el 15 de agosto !</p>
+            <img src="{{ url_for('static', filename='images/oferta1.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta3.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta5.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/junio1.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            
+          
+        </div>
+
+        <div class="oferta">
+            <h4>🔥 Flash Tattoo Day - Diseños desde 50€</h4>
+            <p>El próximo sábado ofrecemos más de 30 diseños exclusivos en estilo oscuro y simbólico. ¡Primero en llegar, primero en tatuarse!</p>
+            <img src="{{ url_for('static', filename='images/oferta8.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta2.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta4.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta6.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            <img src="{{ url_for('static', filename='images/oferta7.jpg') }}" alt="Oferta 1" onclick="mostrarLightbox(this.src)">
+            
+
+        </div>
+
+
+        <div class="oferta">
+            <h5>🎁 Descuento de Bienvenida -10%</h5>
+            <p>Tu primer tatuaje en Noxîa Gallery tiene un 10% de descuento. Aplica a citas de lunes a jueves.</p>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Noxîa Gallery. Todos los derechos reservados.</p>
+    </footer>
+<script>
+    function mostrarLightbox(src) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        lightbox.style.display = 'flex';
+        lightboxImg.src = src;
+    }
+
+    function cerrarLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

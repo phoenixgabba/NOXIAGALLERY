@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Galería | Noxîa Gallery {% endblock %}
+
+{% block content %}
+<div class="contenido-principal">
+    <div class="galeria">
+        <h2>Noxîa Gallery & Studio.</h2>
+        <p>Explora nuestra galeria de tatuajes.</p>
+
+        <div class="tatuaje">
+            <img src="{{ url_for('static', filename='img/tatuaje1.jpg') }}" alt="Tatuaje 1">
+            <p>Peony</p>
+        </div>
+        <div class="tatuaje">
+            <img src="{{ url_for('static', filename='img/tatuaje2.jpg') }}" alt="Tatuaje 2">
+            <p>Gothic</p>
+        </div>
+        <div class="tatuaje">
+            <img src="{{ url_for('static', filename='img/tatuaje3.jpg') }}" alt="Tatuaje 3">
+            <p>Armor</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

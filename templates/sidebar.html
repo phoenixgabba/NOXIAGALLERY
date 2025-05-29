@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio | Noxîa Gallery{% endblock %}
+{% block header %}Bienvenid@ a Noxîa Gallery{% endblock %}
+
+{% block content %}
+
+
+<!-- Logo centrado -->
+<div class="logo-centro">
+    <img src="{{ url_for('static', filename='images/logo-noxia.png') }}" alt="Logo Noxia">
+</div>
+
+<!-- Texto de introducción -->
+<div class="intro">
+    <h2>Arte eterno, pasión por la tinta.</h2>
+    <p>Bienvenido a Noxîa Gallery, donde el arte del tatuaje cobra vida.</p>
+</div>
+
+<!-- Panel lateral con las opciones -->
+<div class="sidebar">
+    <a href="{{ url_for('login') }}">Acceder al Panel</a>
+    <a href="{{ url_for('nueva_cita') }}">Solicitar una Cita</a>
+    <a href="{{ url_for('galeria') }}">Ver Galería</a>
+    <a href="{{ url_for('sobre_mi') }}">Conoce a la Artista</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Citas | Noxîa{% endblock %}
+
+{% block content %}
+<div class="contenido-principal">
+
+    <!-- 🖼️ Logo centrado -->
+    <div class="logo-centro">
+        <img src="{{ url_for('static', filename='images/logo-noxia.png') }}" alt="Logo Noxia">
+    </div>
+
+    <!-- 🧱 Barra lateral -->
+    <div class="sidebar">
+        <a href="{{ url_for('logout') }}">⭥ Cerrar sesión</a>
+        <a href="https://noxia.onrender.com/formulario" target="_blank">📝 Solicitar Presupuesto</a>
+        <a href="https://wa.me/34611965315?text=Hola%20me%20gustaría%20pedir%20información%20sobre%20un%20tatuaje" target="_blank">💬 Hablar por WhatsApp</a>
+        <a href="https://tusitio.com/disponibles" target="_blank">🗓️ Ver Disponibles</a>
+        <a href="{{ url_for('ofertas')}}" target="_blank">🔥 Ver Ofertas</a>
+        <a href="https://consentoxia.onrender.com/" target="_blank">✅ Consentimiento Informado</a>
+    </div>
+
+    <!-- 🗋 Panel de citas -->
+    <div class="panel-container">
+        {% for cita in citas %}
+            <div class="cita-card">
+                <strong>{{ cita.nombre }}</strong><br>
+                📞 {{ cita.contacto }}<br>
+                📍 {{ cita.zona }}, {{ cita.tamano }}<br>
+                🗓️ {{ cita.fecha.strftime('%d/%m/%Y %H:%M') if cita.fecha else 'Sin fecha registrada' }}<br>
+                🗓️ {{ cita.dias }} / {{ cita.horario }}<br>
+                💸 Precio: {{ cita.precio }}€, Señal: {{ cita.senal }}€<br>
+                🖼️ Archivos:
+                {% if cita.archivos %}
+                    <a href="{{ url_for('static', filename='uploads/' + cita.archivos) }}" target="_blank">Ver archivo</a><br>
+                {% else %}
+                    No hay archivos<br>
+                {% endif %}
+                💬 Comentarios: {{ cita.comentario }}<br>
+                <hr>
+                <form method="POST" action="{{ url_for('eliminar_cita', cita_id=cita.id) }}" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">
+                    <input type="submit" value="Eliminar cita" class="boton-eliminar">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

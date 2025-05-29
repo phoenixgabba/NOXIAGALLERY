@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - Noxîa Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Noxîa Gallery">
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li><a href="{{ url_for('panel') }}">Panel</a></li>
+                <li><a href="{{ url_for('galeria') }}">Galería</a></li>
+                <li><a href="{{ url_for('sobre_mi') }}">Sobre Nosotros</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        <section class="artists-section">
+            <h1>Conoce a los Artistas del Estudio</h1>
+            <div class="artists-container">
+                <div class="artist-profile">
+                    <h3>Residente</h3>
+                    <img src="{{ url_for('static', filename='img/tatuaje1.jpg') }}" >
+                    <p>La Nuit</p>
+                    <p>Más de 10 años de experiencia en el sector. Blackword, Grabado y Body Suit.</p>
+                    <a href="https://www.instagram.com/lanuittattoo?igsh=YWtqeml1dDFvczN3" target="_blank">@lanuittattoo</a>
+                </div>
+
+                <div class="artist-profile">
+                    <h3>Guest</h3>
+                    <img src="{{ url_for('static', filename='images/artist2.jpg') }}">
+                    <p>Doctorcharco</p>
+                    <p>Descripción sobre el artista. Estilo, inspiración y experiencia.</p>
+                    <a href="https://www.instagram.com/doctorcharcho?igsh=emY2dzJma2xyMzZx" target="_blank">@doctorcharco</a>
+                    <img src="{{ url_for('static', filename='images/artist3.jpg') }}"
+                    <p>Artista</p>
+                    <p>Descripción sobre el artista. Estilo, inspiración y experiencia.</p>
+                    <a href="https://www.instagram.com/" target="_blank">@</a>
+                </div>
+
+                <!-- Añadir más artistas aquí -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Noxîa Gallery. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
