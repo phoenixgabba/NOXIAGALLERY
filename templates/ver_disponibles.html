@@ -69,7 +69,10 @@
 
     <div>
         <label for="cameraSelect">Selecciona una cámara:</label>
-        <select id="cameraSelect"></select>
+        <select id="cameraSelect">
+            <option value="user">Cámara Delantera</option>
+            <option value="environment">Cámara Trasera</option>
+        </select>
 
         <label for="bodyPartSelect">Parte del cuerpo:</label>
         <select id="bodyPartSelect">
@@ -115,32 +118,22 @@
                 cameraSelect.appendChild(option);
             });
 
-            // Intentar acceder a la cámara trasera usando 'facingMode'
-            startCameraUsingFacingMode();
+            // Iniciar la cámara con el valor predeterminado de 'environment' (cámara trasera)
+            startCamera('environment');
         });
 
         cameraSelect.addEventListener('change', () => {
+            const selectedCamera = cameraSelect.value;
             if (currentStream) currentStream.getTracks().forEach(track => track.stop());
-            startCamera(cameraSelect.value);
+            startCamera(selectedCamera);
         });
 
-        function startCameraUsingFacingMode() {
-            navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: { exact: "environment" } } 
-            })
-            .then(stream => {
-                currentStream = stream;
-                video.srcObject = stream;
-                loadPoseDetector();
-            })
-            .catch(err => {
-                alert('No se pudo acceder a la cámara trasera: ' + err.message);
-                document.querySelector('#camera-container').innerHTML = '<p class="mensaje-error">Error al acceder a la cámara trasera.</p>';
-            });
-        }
+        function startCamera(facingMode) {
+            const constraints = facingMode === 'user' 
+                ? { video: { facingMode: "user" } } 
+                : { video: { facingMode: "environment" } };
 
-        function startCamera(deviceId) {
-            navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: deviceId } } })
+            navigator.mediaDevices.getUserMedia(constraints)
                 .then(stream => {
                     currentStream = stream;
                     video.srcObject = stream;
