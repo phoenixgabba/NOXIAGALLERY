@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Probar Diseños - Noxîa Gallery</title>
+    <title>Probar Diseños - Noxïa Gallery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
@@ -28,8 +28,8 @@
         }
         .overlay-img {
             position: absolute;
-            max-width: 150px;
-            opacity: 0.8;
+            width: 100px;
+            opacity: 0.9;
             pointer-events: none;
         }
         #camera-container {
@@ -58,6 +58,10 @@
             color: red;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
 </head>
 <body>
     <h1>🖤 Prueba tus Diseños</h1>
@@ -89,8 +93,8 @@
         const overlay = document.getElementById('overlay');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream;
+        let detector;
 
-        // Listar cámaras disponibles
         navigator.mediaDevices.enumerateDevices()
             .then(devices => {
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
@@ -100,13 +104,11 @@
                     option.text = device.label || `Cámara ${index + 1}`;
                     cameraSelect.appendChild(option);
                 });
-
                 if (videoDevices.length > 0) {
                     startCamera(videoDevices[0].deviceId);
                 }
             });
 
-        // Cambiar de cámara cuando se selecciona otra
         cameraSelect.addEventListener('change', () => {
             if (currentStream) {
                 currentStream.getTracks().forEach(track => track.stop());
@@ -119,6 +121,7 @@
                 .then(stream => {
                     currentStream = stream;
                     video.srcObject = stream;
+                    loadPoseDetector();
                 })
                 .catch(err => {
                     alert('No se pudo acceder a la cámara: ' + err.message);
@@ -126,13 +129,32 @@
                 });
         }
 
-        // Seleccionar diseño
+        async function loadPoseDetector() {
+            detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
+            requestAnimationFrame(detectPose);
+        }
+
+        async function detectPose() {
+            if (video.readyState === 4 && detector) {
+                const poses = await detector.estimatePoses(video);
+                if (poses.length > 0 && overlay.src && overlay.style.display !== 'none') {
+                    const keypoints = poses[0].keypoints;
+                    const torso = keypoints.find(kp => kp.name === 'leftShoulder');
+                    if (torso && torso.score > 0.5) {
+                        const x = torso.x;
+                        const y = torso.y;
+                        overlay.style.left = `${x}px`;
+                        overlay.style.top = `${y}px`;
+                        overlay.style.transform = 'translate(-50%, -50%)';
+                    }
+                }
+            }
+            requestAnimationFrame(detectPose);
+        }
+
         function seleccionarDiseno(img) {
             overlay.src = img.src;
             overlay.style.display = 'block';
-            overlay.style.top = '20%';
-            overlay.style.left = '50%';
-            overlay.style.transform = 'translateX(-50%)';
         }
     </script>
 </body>
