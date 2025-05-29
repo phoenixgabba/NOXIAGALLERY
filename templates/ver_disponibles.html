@@ -13,19 +13,29 @@
             font-family: 'CloisterBlack', serif;
         }
         select {
-            margin-bottom: 15px;
+            margin: 10px;
             padding: 5px;
             background-color: #222;
             color: gold;
             border: 1px solid gold;
             border-radius: 5px;
         }
-        canvas {
+        video {
             width: 80%;
             max-width: 400px;
             border: 3px solid gold;
             border-radius: 20px;
-            background-color: #222;
+        }
+        .overlay-img {
+            position: absolute;
+            opacity: 0.9;
+            pointer-events: none;
+            touch-action: none;
+        }
+        #camera-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
         }
         #diseños {
             margin-top: 20px;
@@ -60,10 +70,19 @@
     <div>
         <label for="cameraSelect">Selecciona una cámara:</label>
         <select id="cameraSelect"></select>
+
+        <label for="bodyPartSelect">Parte del cuerpo:</label>
+        <select id="bodyPartSelect">
+            <option value="leftShoulder">Hombro Izquierdo</option>
+            <option value="rightShoulder">Hombro Derecho</option>
+            <option value="leftHip">Cadera Izquierda</option>
+            <option value="rightHip">Cadera Derecha</option>
+            <option value="nose">Centro del Rostro</option>
+        </select>
     </div>
 
     <div id="camera-container">
-        <canvas id="canvas"></canvas>
+        <video id="video" autoplay playsinline muted></video>
         <img id="overlay" class="overlay-img" src="" alt="Diseño superpuesto" style="display: none;">
     </div>
 
@@ -79,33 +98,26 @@
     </div>
 
     <script>
-        const video = document.createElement('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('video');
         const overlay = document.getElementById('overlay');
         const cameraSelect = document.getElementById('cameraSelect');
         let currentStream;
         let detector;
         let selectedDesign = null;
 
-        navigator.mediaDevices.enumerateDevices()
-            .then(devices => {
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                videoDevices.forEach((device, index) => {
-                    const option = document.createElement('option');
-                    option.value = device.deviceId;
-                    option.text = device.label || `Cámara ${index + 1}`;
-                    cameraSelect.appendChild(option);
-                });
-                if (videoDevices.length > 0) {
-                    startCamera(videoDevices[0].deviceId);
-                }
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            videoDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Cámara ${index + 1}`;
+                cameraSelect.appendChild(option);
             });
+            if (videoDevices.length > 0) startCamera(videoDevices[0].deviceId);
+        });
 
         cameraSelect.addEventListener('change', () => {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
+            if (currentStream) currentStream.getTracks().forEach(track => track.stop());
             startCamera(cameraSelect.value);
         });
 
@@ -114,7 +126,6 @@
                 .then(stream => {
                     currentStream = stream;
                     video.srcObject = stream;
-                    video.play();
                     loadPoseDetector();
                 })
                 .catch(err => {
@@ -127,33 +138,31 @@
             detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet);
             video.width = 640;
             video.height = 480;
-            canvas.width = 640;
-            canvas.height = 480;
             requestAnimationFrame(detectPose);
         }
 
         async function detectPose() {
             if (video.readyState === 4 && detector) {
                 const poses = await detector.estimatePoses(video);
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before drawing new frame
-
                 if (poses.length > 0 && selectedDesign) {
                     const keypoints = poses[0].keypoints;
-                    const torso = keypoints.find(kp => kp.name === 'leftShoulder');
-                    if (torso && torso.score > 0.5) {
-                        const x = torso.x;
-                        const y = torso.y;
+                    const selectedKey = document.getElementById('bodyPartSelect').value;
+                    const target = keypoints.find(kp => kp.name === selectedKey);
+                    if (target && target.score > 0.5) {
+                        const x = target.x;
+                        const y = target.y;
 
-                        // Check if design is within the body
+                        // Adjust design position
                         const designWidth = selectedDesign.width;
                         const designHeight = selectedDesign.height;
 
-                        // Mask out areas outside of the detected body
+                        // Only show part of the design within the body
                         const maskX = Math.max(x - designWidth / 2, 0);
                         const maskY = Math.max(y - designHeight / 2, 0);
                         const maskWidth = Math.min(designWidth, canvas.width - maskX);
                         const maskHeight = Math.min(designHeight, canvas.height - maskY);
 
+                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before redrawing
                         ctx.drawImage(selectedDesign, maskX, maskY, maskWidth, maskHeight);
                     }
                 }
