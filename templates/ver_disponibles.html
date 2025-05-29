@@ -115,18 +115,29 @@
                 cameraSelect.appendChild(option);
             });
 
-            // Intentar usar la cámara trasera si está disponible
-            const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
-            const cameraToUse = rearCamera || videoDevices[0]; // Usa la cámara trasera o la primera cámara disponible
-            if (cameraToUse) {
-                startCamera(cameraToUse.deviceId);
-            }
+            // Intentar acceder a la cámara trasera usando 'facingMode'
+            startCameraUsingFacingMode();
         });
 
         cameraSelect.addEventListener('change', () => {
             if (currentStream) currentStream.getTracks().forEach(track => track.stop());
             startCamera(cameraSelect.value);
         });
+
+        function startCameraUsingFacingMode() {
+            navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: { exact: "environment" } } 
+            })
+            .then(stream => {
+                currentStream = stream;
+                video.srcObject = stream;
+                loadPoseDetector();
+            })
+            .catch(err => {
+                alert('No se pudo acceder a la cámara trasera: ' + err.message);
+                document.querySelector('#camera-container').innerHTML = '<p class="mensaje-error">Error al acceder a la cámara trasera.</p>';
+            });
+        }
 
         function startCamera(deviceId) {
             navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: deviceId } } })
