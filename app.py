@@ -129,7 +129,7 @@ def ver_disponibles():
         os.makedirs(carpeta)
 
     imagenes = [img for img in os.listdir(carpeta) if img.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
-    return render_template('disponibles.html', imagenes=imagenes)
+    return render_template('ver_disponibles.html', imagenes=imagenes)
 
 
 # Ruta registro
