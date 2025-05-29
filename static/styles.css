@@ -348,3 +348,23 @@ footer {
 .artist-profile a:hover {
     color: #ff6600;
 }
+#camera-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+    width: 80%;
+    max-width: 400px;
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+
+.overlay-img {
+    position: absolute;
+    width: 100px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 10;
+}

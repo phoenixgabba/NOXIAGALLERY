@@ -13,14 +13,14 @@
             font-family: 'CloisterBlack', serif;
         }
         select {
-            margin-bottom: 15px;
+            margin: 10px;
             padding: 5px;
             background-color: #222;
             color: gold;
             border: 1px solid gold;
             border-radius: 5px;
         }
-        video, canvas {
+        video {
             width: 80%;
             max-width: 400px;
             border: 3px solid gold;
@@ -30,7 +30,8 @@
             position: absolute;
             width: 100px;
             opacity: 0.9;
-            pointer-events: none;
+            pointer-events: auto;
+            touch-action: none;
         }
         #camera-container {
             position: relative;
@@ -70,6 +71,15 @@
     <div>
         <label for="cameraSelect">Selecciona una cámara:</label>
         <select id="cameraSelect"></select>
+
+        <label for="bodyPartSelect">Parte del cuerpo:</label>
+        <select id="bodyPartSelect">
+            <option value="leftShoulder">Hombro Izquierdo</option>
+            <option value="rightShoulder">Hombro Derecho</option>
+            <option value="leftHip">Cadera Izquierda</option>
+            <option value="rightHip">Cadera Derecha</option>
+            <option value="nose">Centro del Rostro</option>
+        </select>
     </div>
 
     <div id="camera-container">
@@ -95,24 +105,25 @@
         let currentStream;
         let detector;
 
-        navigator.mediaDevices.enumerateDevices()
-            .then(devices => {
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                videoDevices.forEach((device, index) => {
-                    const option = document.createElement('option');
-                    option.value = device.deviceId;
-                    option.text = device.label || `Cámara ${index + 1}`;
-                    cameraSelect.appendChild(option);
-                });
-                if (videoDevices.length > 0) {
-                    startCamera(videoDevices[0].deviceId);
-                }
+        let isDragging = false;
+        let startX, startY;
+        let overlayX = 150, overlayY = 150;
+        let scale = 1;
+        let rotation = 0;
+
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            videoDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Cámara ${index + 1}`;
+                cameraSelect.appendChild(option);
             });
+            if (videoDevices.length > 0) startCamera(videoDevices[0].deviceId);
+        });
 
         cameraSelect.addEventListener('change', () => {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
+            if (currentStream) currentStream.getTracks().forEach(track => track.stop());
             startCamera(cameraSelect.value);
         });
 
@@ -139,13 +150,12 @@
                 const poses = await detector.estimatePoses(video);
                 if (poses.length > 0 && overlay.src && overlay.style.display !== 'none') {
                     const keypoints = poses[0].keypoints;
-                    const torso = keypoints.find(kp => kp.name === 'leftShoulder');
-                    if (torso && torso.score > 0.5) {
-                        const x = torso.x;
-                        const y = torso.y;
-                        overlay.style.left = `${x}px`;
-                        overlay.style.top = `${y}px`;
-                        overlay.style.transform = 'translate(-50%, -50%)';
+                    const selectedKey = document.getElementById('bodyPartSelect').value;
+                    const target = keypoints.find(kp => kp.name === selectedKey);
+                    if (target && target.score > 0.5) {
+                        overlayX = target.x;
+                        overlayY = target.y;
+                        updateOverlayTransform();
                     }
                 }
             }
@@ -155,6 +165,42 @@
         function seleccionarDiseno(img) {
             overlay.src = img.src;
             overlay.style.display = 'block';
+        }
+
+        overlay.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - overlayX;
+                startY = e.touches[0].clientY - overlayY;
+            }
+        });
+
+        overlay.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (e.touches.length === 1 && isDragging) {
+                overlayX = e.touches[0].clientX - startX;
+                overlayY = e.touches[0].clientY - startY;
+                updateOverlayTransform();
+            }
+            if (e.touches.length === 2) {
+                const dx = e.touches[1].clientX - e.touches[0].clientX;
+                const dy = e.touches[1].clientY - e.touches[0].clientY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                scale = dist / 150;
+                rotation = angle;
+                updateOverlayTransform();
+            }
+        }, { passive: false });
+
+        overlay.addEventListener('touchend', function(e) {
+            if (e.touches.length < 2) isDragging = false;
+        });
+
+        function updateOverlayTransform() {
+            overlay.style.left = `${overlayX}px`;
+            overlay.style.top = `${overlayY}px`;
+            overlay.style.transform = `translate(-50%, -50%) scale(${scale}) rotate(${rotation}deg)`;
         }
     </script>
 </body>
