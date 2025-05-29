@@ -155,26 +155,33 @@
         async function detectPose() {
             if (video.readyState === 4 && detector) {
                 const poses = await detector.estimatePoses(video);
-                if (poses.length > 0 && selectedDesign) {
-                    const keypoints = poses[0].keypoints;
-                    const selectedKey = document.getElementById('bodyPartSelect').value;
-                    const target = keypoints.find(kp => kp.name === selectedKey);
-                    if (target && target.score > 0.5) {
-                        const x = target.x;
-                        const y = target.y;
+                if (poses.length > 0) {
+                    console.log("Poses detectadas:", poses); // Depuración
 
-                        // Ajustar posición y recorte del diseño
-                        const designWidth = selectedDesign.width;
-                        const designHeight = selectedDesign.height;
+                    if (selectedDesign) {
+                        const keypoints = poses[0].keypoints;
+                        const selectedKey = document.getElementById('bodyPartSelect').value;
+                        const target = keypoints.find(kp => kp.name === selectedKey);
 
-                        const maskX = Math.max(x - designWidth / 2, 0);
-                        const maskY = Math.max(y - designHeight / 2, 0);
-                        const maskWidth = Math.min(designWidth, canvas.width - maskX);
-                        const maskHeight = Math.min(designHeight, canvas.height - maskY);
+                        if (target && target.score > 0.5) {
+                            const x = target.x;
+                            const y = target.y;
 
-                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas antes de redibujar
-                        ctx.drawImage(selectedDesign, maskX, maskY, maskWidth, maskHeight);
+                            // Ajustar posición y recorte del diseño
+                            const designWidth = selectedDesign.width;
+                            const designHeight = selectedDesign.height;
+
+                            const maskX = Math.max(x - designWidth / 2, 0);
+                            const maskY = Math.max(y - designHeight / 2, 0);
+                            const maskWidth = Math.min(designWidth, canvas.width - maskX);
+                            const maskHeight = Math.min(designHeight, canvas.height - maskY);
+
+                            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas antes de redibujar
+                            ctx.drawImage(selectedDesign, maskX, maskY, maskWidth, maskHeight);
+                        }
                     }
+                } else {
+                    console.log("No se detectó pose."); // Depuración
                 }
             }
             requestAnimationFrame(detectPose);
