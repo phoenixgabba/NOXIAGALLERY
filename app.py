@@ -121,6 +121,14 @@ def logout():
 def galeria():
     return render_template('galeria.html')
 
+#Ruta ver disponibles
+@app.route('/disponibles')
+def ver_disponibles():
+    carpeta = os.path.join(app.static_folder, 'uploads_disponibles')
+    imagenes = [img for img in os.listdir(carpeta) if img.endswith(('.png', '.jpg', '.jpeg', '.webp'))]
+    return render_template('verdisponibles.html', imagenes=imagenes)
+
+
 # Ruta registro
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():

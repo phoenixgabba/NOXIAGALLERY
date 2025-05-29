@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Probar Diseños - Noxîa Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #111;
+            color: #f5f5f5;
+            text-align: center;
+            padding: 20px;
+        }
+        video, canvas {
+            width: 80%;
+            max-width: 400px;
+            border: 3px solid gold;
+            border-radius: 20px;
+        }
+        .overlay-img {
+            position: absolute;
+            max-width: 150px;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        #camera-container {
+            position: relative;
+            display: inline-block;
+        }
+        #diseños {
+            margin-top: 20px;
+        }
+        .diseño-thumb {
+            max-width: 100px;
+            margin: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.3s, border 0.3s;
+        }
+        .diseño-thumb:hover {
+            transform: scale(1.1);
+            border: 2px solid gold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖤 Prueba tus Diseños</h1>
+    <p>Activa tu cámara y elige un diseño para ver cómo te queda.</p>
+
+    <div id="camera-container">
+        <video id="video" autoplay playsinline muted></video>
+        <img id="overlay" class="overlay-img" src="" alt="Diseño superpuesto" style="display: none;">
+    </div>
+
+    <div id="diseños">
+        <h2>Diseños Disponibles</h2>
+        {% for img in imagenes %}
+            <img src="{{ url_for('static', filename='uploads_disponibles/' + img) }}" class="diseño-thumb" onclick="seleccionarDiseno(this)">
+        {% endfor %}
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const overlay = document.getElementById('overlay');
+
+        // Activar la cámara
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { alert('No se pudo acceder a la cámara'); });
+
+        // Función para seleccionar un diseño
+        function seleccionarDiseno(img) {
+            overlay.src = img.src;
+            overlay.style.display = 'block';
+            overlay.style.top = '20%'; // Puedes ajustar esto
+            overlay.style.left = '50%';
+            overlay.style.transform = 'translateX(-50%)';
+        }
+    </script>
+</body>
+</html>
