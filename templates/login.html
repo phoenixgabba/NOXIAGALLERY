@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="form-container">
     <h2>Iniciar Sesión</h2>
@@ -12,5 +13,15 @@
         <button type="submit">Entrar</button>
     </form>
     <a href="{{ url_for('registro') }}" class="registro-link">¿No tienes cuenta? Regístrate aquí</a>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="flash {{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 </div>
 {% endblock %}
