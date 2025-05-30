@@ -38,25 +38,23 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3); /* Opacidad más ligera */
+    background: rgba(0, 0, 0, 0.3);
     z-index: -1;
 }
 
 /* Menú de navegación */
 .navbar ul {
-    display: flex;               /* Usamos Flexbox para que los elementos estén en una fila */
-    justify-content: flex-start;  /* Alinea los elementos al inicio */
-    padding: 0;                  /* Elimina el padding predeterminado del ul */
-    margin: 0;                   /* Elimina el margen predeterminado del ul */
-    list-style: none;            /* Elimina los puntos de la lista */
+    display: flex;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
-/* Cada item del menú */
 .navbar li {
-    margin-right: 20px; /* Espacio entre los elementos */
+    margin-right: 20px;
 }
 
-/* Estilos de los enlaces */
 .navbar a {
     color: #d4af37;
     text-decoration: none;
@@ -65,16 +63,15 @@ body {
     transition: background-color 0.3s, color 0.3s ease;
     padding: 10px 15px;
     border-radius: 10px;
-    display: block;  /* Hace que cada enlace se comporte como un bloque */
+    display: block;
 }
 
-/* Efecto hover en los enlaces */
 .navbar a:hover {
     background-color: #d4af37;
     color: #000;
 }
 
-/* Contenedor principal (con el logo encima del video) */
+/* Contenedor principal */
 .main-container {
     position: relative;
     display: flex;
@@ -83,7 +80,7 @@ body {
     height: 160vh;
     z-index: 1;
     width: 100%;
-    text-align: center; /* Asegura que todo el contenido dentro se centre */
+    text-align: center;
 }
 
 /* Contenedor del logo */
@@ -96,26 +93,22 @@ body {
     text-align: center;
 }
 
-/* Imagen dentro del contenedor */
 .logo-container img {
     width: 300px !important;
     height: auto;
     filter: drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.8));
 }
 
-/* Título debajo del logo */
 .logo-container h1 {
     color: #d4af37 !important;
     font-family: 'CloisterBlack', serif !important;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
     font-size: 28px;
     margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
 }
 
-/* Estilo del formulario */
+/* Formulario */
 form {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 30px;
@@ -129,7 +122,6 @@ form {
     text-align: center;
 }
 
-/* Estilo para los campos de entrada */
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -148,7 +140,7 @@ select {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
 }
 
-/* Botones y Submit */
+/* Botones */
 input[type="submit"],
 button {
     background-color: #d4af37;
@@ -194,10 +186,8 @@ footer {
     border-top: 1px solid #444;
 }
 
-/* Logo centrado adicional */
+/* Logo alternativo centrado */
 .logo-centro {
-    position: relative;
-    z-index: 2;
     text-align: center;
     margin-top: 30px;
 }
@@ -235,6 +225,8 @@ footer {
     padding: 40px 20px;
     max-width: 1000px;
     margin: 0 auto;
+    background-color: rgba(20, 20, 20, 0.9);
+    border-radius: 10px;
 }
 
 .cita-card {
@@ -262,32 +254,16 @@ footer {
 .boton-eliminar:hover {
     background-color: #b88d2f;
 }
-.contenido-base {
-    position: relative;
-    z-index: 1;
-    padding: 2rem;
-    color: #f0f0f0;
-}
 
-.panel-container,
-.cita-card,
-.galeria,
-.sidebar {
-    background-color: rgba(20, 20, 20, 0.9); /* Fondo oscuro semitransparente */
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-}
-
-.cita-card {
-    border: 1px solid #444;
-    box-shadow: 0 0 10px #222;
-}
-
+/* Galería */
 .galeria {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    background-color: rgba(20, 20, 20, 0.9);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
 }
 
 .tatuaje {
@@ -303,6 +279,8 @@ footer {
     border-radius: 6px;
     border: 1px solid #555;
 }
+
+/* Sección de artistas */
 .artists-section {
     padding: 40px;
     text-align: center;
@@ -348,6 +326,8 @@ footer {
 .artist-profile a:hover {
     color: #ff6600;
 }
+
+/* Cámara con overlay de diseño */
 #camera-container {
     position: relative;
     display: inline-block;

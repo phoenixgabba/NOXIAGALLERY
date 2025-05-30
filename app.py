@@ -12,14 +12,13 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 db = SQLAlchemy(app)
 
-# Modelo de usuario
+# MODELOS
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     correo = db.Column(db.String(100), unique=True, nullable=False)
     contrasena = db.Column(db.String(100), nullable=False)
 
-# Modelo de cita
 class Cita(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -37,36 +36,63 @@ class Cita(db.Model):
 with app.app_context():
     db.create_all()
 
-# Ruta para la página principal
+# RUTAS PRINCIPALES
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Ruta para el panel de citas
-@app.route("/panel")
+@app.route('/panel')
 def panel():
     if "usuario_id" not in session:
         return redirect(url_for("login"))
     return render_template("panel.html")
 
-# Función para eliminar una cita
-@app.route('/eliminar_cita/<int:cita_id>', methods=['POST'])
-def eliminar_cita(cita_id):
-    cita = Cita.query.get_or_404(cita_id)
-    if cita.archivos:
-        archivo_path = os.path.join(app.config['UPLOAD_FOLDER'], cita.archivos)
-        if os.path.exists(archivo_path):
-            os.remove(archivo_path)
-    db.session.delete(cita)
-    db.session.commit()
-    flash('Cita eliminada correctamente.', 'success')
-    return redirect(url_for('panel'))
+@app.route('/logout')
+def logout():
+    session.pop('usuario_id', None)
+    return redirect(url_for('index'))
 
-# Función para mostrar el formulario de nueva cita
+# AUTENTICACIÓN
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        contrasena = request.form['contrasena']
+
+        usuario_existente = Usuario.query.filter_by(correo=correo).first()
+        if usuario_existente:
+            flash('Este correo ya está registrado.', 'danger')
+            return redirect(url_for('registro'))
+
+        contrasena_hash = generate_password_hash(contrasena)
+        nuevo_usuario = Usuario(nombre=nombre, correo=correo, contrasena=contrasena_hash)
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        flash('Registro exitoso. Ahora puedes iniciar sesión.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('registro.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        correo = request.form['correo']
+        contrasena = request.form['contrasena']
+        usuario = Usuario.query.filter_by(correo=correo).first()
+        if usuario and check_password_hash(usuario.contrasena, contrasena):
+            session['usuario_id'] = usuario.id
+            return redirect(url_for('panel'))
+        else:
+            flash('Correo o contraseña incorrectos.', 'danger')
+    return render_template('login.html')
+
+# GESTIÓN DE CITAS
 @app.route('/nueva-cita', methods=['GET', 'POST'])
 def nueva_cita():
     if "usuario_id" not in session:
         return redirect(url_for("login"))
+    
     if request.method == 'POST':
         nombre = request.form['nombre']
         contacto = request.form['contacto']
@@ -85,10 +111,12 @@ def nueva_cita():
             archivo_nombre = archivo.filename
             archivo.save(os.path.join(app.config['UPLOAD_FOLDER'], archivo_nombre))
         
-        nueva_cita = Cita(nombre=nombre, contacto=contacto, zona=zona, tamano=tamano, 
-                          fecha=datetime.strptime(fecha, '%Y-%m-%d') if fecha else None, 
-                          dias=dias, horario=horario, precio=precio, senal=senal, 
-                          archivos=archivo_nombre, comentario=comentario)
+        nueva_cita = Cita(
+            nombre=nombre, contacto=contacto, zona=zona, tamano=tamano, 
+            fecha=datetime.strptime(fecha, '%Y-%m-%d') if fecha else None, 
+            dias=dias, horario=horario, precio=precio, senal=senal, 
+            archivos=archivo_nombre, comentario=comentario
+        )
         db.session.add(nueva_cita)
         db.session.commit()
         flash('Cita registrada correctamente.', 'success')
@@ -96,75 +124,51 @@ def nueva_cita():
     
     return render_template('formulario_cita.html')
 
-# Función de inicio de sesión
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        correo = request.form['correo']
-        contrasena = request.form['contrasena']
-        usuario = Usuario.query.filter_by(correo=correo).first()
-        if usuario and check_password_hash(usuario.contrasena, contrasena):
-            session['usuario_id'] = usuario.id
-            return redirect(url_for('panel'))
-        else:
-            flash('Correo o contraseña incorrectos.', 'danger')
-    return render_template('login.html')
+@app.route('/eliminar_cita/<int:cita_id>', methods=['POST'])
+def eliminar_cita(cita_id):
+    cita = Cita.query.get_or_404(cita_id)
+    if cita.archivos:
+        archivo_path = os.path.join(app.config['UPLOAD_FOLDER'], cita.archivos)
+        if os.path.exists(archivo_path):
+            os.remove(archivo_path)
+    db.session.delete(cita)
+    db.session.commit()
+    flash('Cita eliminada correctamente.', 'success')
+    return redirect(url_for('panel'))
 
-# Función de cierre de sesión
-@app.route('/logout')
-def logout():
-    session.pop('usuario_id', None)
-    return redirect(url_for('index'))
-
-# Ruta para la galería
+# GALERÍA
 @app.route('/galeria')
 def galeria():
-    return render_template('galeria.html')
+    base_dir = os.path.join(app.static_folder, 'img')
+    categorias = {}
+    for carpeta in os.listdir(base_dir):
+        ruta_carpeta = os.path.join(base_dir, carpeta)
+        if os.path.isdir(ruta_carpeta):
+            imagenes = [
+                f'img/{carpeta}/{img}' for img in os.listdir(ruta_carpeta)
+                if img.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))
+            ]
+            categorias[carpeta.capitalize()] = imagenes
+    return render_template('galeria.html', categorias=categorias)
 
-#Ruta ver disponibles
+# DISPONIBLES
 @app.route('/disponibles')
 def ver_disponibles():
     carpeta = os.path.join('static', 'uploads_disponibles')
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
-
     imagenes = [img for img in os.listdir(carpeta) if img.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
     return render_template('ver_disponibles.html', imagenes=imagenes)
 
-
-# Ruta registro
-@app.route('/registro', methods=['GET', 'POST'])
-def registro():
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        correo = request.form['correo']
-        contrasena = request.form['contrasena']
-
-        # Verifica si el usuario ya existe
-        usuario_existente = Usuario.query.filter_by(correo=correo).first()
-        if usuario_existente:
-            flash('Este correo ya está registrado.', 'danger')
-            return redirect(url_for('registro'))
-
-        # Crear nuevo usuario
-        contrasena_hash = generate_password_hash(contrasena)
-        nuevo_usuario = Usuario(nombre=nombre, correo=correo, contrasena=contrasena_hash)
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-        flash('Registro exitoso. Ahora puedes iniciar sesión.', 'success')
-        return redirect(url_for('login'))
-
-    return render_template('registro.html')
-
-#Ruta ofertas
+# PÁGINAS ESTÁTICAS
 @app.route('/ofertas')
 def ofertas():
     return render_template('ofertas.html')
 
-# Ruta sobre mí
 @app.route('/sobre-mi')
 def sobre_mi():
     return render_template('sobre_mi.html')
 
+# MAIN
 if __name__ == '__main__':
     app.run(debug=True)
