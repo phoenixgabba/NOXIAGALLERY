@@ -194,6 +194,16 @@ def verify_email(token):
 def sobre_mi():
     return render_template('sobre_mi.html')
 
+@app.route('/ver_disponibles')
+def ver_disponibles():
+    # Lógica de la vista
+    return render_template('disponibles.html')
+
+@app.route('/ofertas')
+def ofertas():
+    # Lógica de la vista
+    return render_template('ofertas.html')
+
 @app.route('/galeria')
 def galeria():
     # Aquí podrías cargar imágenes de la galería o algún contenido relacionado
